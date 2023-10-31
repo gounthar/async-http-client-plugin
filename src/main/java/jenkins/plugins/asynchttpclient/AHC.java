@@ -66,7 +66,7 @@ public class AHC extends Descriptor<AHC> implements Describable<AHC> {
      * @throws IllegalStateException if executed on a slave JVM.
      */
     public static AsyncHttpClient instance() {
-        Jenkins master = Jenkins.getInstance();
+        Jenkins master = Jenkins.getInstanceOrNull();
         if (master == null) {
             throw new IllegalStateException("The shared AsyncHttpClient instance is only available on the master");
         }

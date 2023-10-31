@@ -116,7 +116,7 @@ public class AHCTest {
     @Test
     public void acceptGoodCertificate() throws Throwable {
         try {
-            ProxyConfiguration proxy = Jenkins.getInstance().proxy;
+            ProxyConfiguration proxy = Objects.requireNonNull(Jenkins.getInstanceOrNull()).getProxy();
             URL url = new URL("https://letsencrypt.org");
             HttpURLConnection connection = (HttpURLConnection)
                     (proxy == null ? url.openConnection() : url.openConnection(proxy.createProxy("letsencrypt.org")));
