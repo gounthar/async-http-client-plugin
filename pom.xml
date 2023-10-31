@@ -31,12 +31,12 @@
 
   <name>Async Http Client</name>
   <description>This plugin provides a shared dependency on the ning.com async-http-client library so that other plugins can co-operate when using this library.</description>
-  <url>http://wiki.jenkins-ci.org/display/JENKINS/Async+Http+Client+Plugin</url>
+  <url>https://wiki.jenkins-ci.org/display/JENKINS/Async+Http+Client+Plugin</url>
   <inceptionYear>2012</inceptionYear>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -56,9 +56,9 @@
   </prerequisites>
 
   <scm>
-    <connection>scm:git:git://github.com/jenkinsci/async-http-client-plugin.git</connection>
+    <connection>scm:git:https://github.com/jenkinsci/async-http-client-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/async-http-client-plugin.git</developerConnection>
-    <url>http://github.com/jenkinsci/async-http-client-plugin</url>
+    <url>https://github.com/jenkinsci/async-http-client-plugin</url>
     <tag>HEAD</tag>
   </scm>
 
