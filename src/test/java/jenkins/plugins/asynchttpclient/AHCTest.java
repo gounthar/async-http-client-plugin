@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -22,6 +23,7 @@ import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import java.security.cert.CertPathBuilderException;
 
+import static jenkins.plugins.asynchttpclient.AHC.instance;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.assumeThat;
@@ -33,10 +35,10 @@ public class AHCTest {
 
     @Test
     public void closeCausesRecycle() {
-        assertThat(AHC.instance(), notNullValue());
-        AHC.instance().close();
-        assertThat(AHC.instance(), notNullValue());
-        assertThat(AHC.instance(), hasProperty("closed", is(false)));
+        assertThat(instance(), notNullValue());
+        instance().close();
+        assertThat(instance(), notNullValue());
+        assertThat(instance(), hasProperty("closed", is(false)));
     }
 
     @Test
@@ -48,9 +50,9 @@ public class AHCTest {
         j.getInstance().createProject(j.getInstance().getDescriptorByType(FreeStyleProject.DescriptorImpl.class),
                 jobName);
         final ListenableFuture<Response> response =
-                AHC.instance().executeRequest(new RequestBuilder("GET").setUrl(j.getURL().toURI().toString()).build());
+                instance().executeRequest(new RequestBuilder("GET").setUrl(j.getURL().toURI().toString()).build());
         assertThat(response.get().getResponseBody(), allOf(
-                containsString(Jenkins.getVersion().toString()),
+                containsString(Objects.requireNonNull(Jenkins.getVersion()).toString()),
                 containsString(systemMessage),
                 containsString(jobName)
         ));
@@ -59,7 +61,7 @@ public class AHCTest {
     @Test(expected=CertPathBuilderException.class)
     public void failsOnSelfSignedCertificate() throws Throwable {
         try {
-            ProxyConfiguration proxy = Jenkins.getInstance().proxy;
+            ProxyConfiguration proxy = Objects.requireNonNull(Jenkins.getInstanceOrNull()).proxy;
             URL url = new URL("https://letsencrypt.org");
             HttpURLConnection connection = (HttpURLConnection)
                     (proxy == null ? url.openConnection() : url.openConnection(proxy.createProxy("self-signed.badssl.com")));
@@ -72,7 +74,7 @@ public class AHCTest {
         } catch (SocketTimeoutException e) {
             throw new AssumptionViolatedException("We can connect to self-signed.badssl.com", e);
         }
-        AsyncHttpClient ahc = AHC.instance();
+        AsyncHttpClient ahc = instance();
         ListenableFuture<Response> response = ahc.prepareGet("https://self-signed.badssl.com/").execute();
         try {
             response.get();
@@ -100,7 +102,7 @@ public class AHCTest {
         } catch (SocketTimeoutException e) {
             throw new AssumptionViolatedException("We can connect to expired.badssl.com", e);
         }
-        AsyncHttpClient ahc = AHC.instance();
+        AsyncHttpClient ahc = instance();
         ListenableFuture<Response> response = ahc.prepareGet("https://expired.badssl.com/").execute();
         try {
             response.get();
@@ -126,7 +128,7 @@ public class AHCTest {
         } catch (SocketTimeoutException e) {
             throw new AssumptionViolatedException("We can connect to letsencrypt.org", e);
         }
-        AsyncHttpClient ahc = AHC.instance();
+        AsyncHttpClient ahc = instance();
         ListenableFuture<Response> response = ahc.prepareGet("https://letsencrypt.org").execute();
         assertTrue(response.get().hasResponseStatus());
     }
