@@ -35,9 +35,9 @@ public class AHCTest {
 
     @Test
     public void closeCausesRecycle() {
-        assertThat(instance(), notNullValue());
+        assertNotNull(instance());
         instance().close();
-        assertThat(instance(), notNullValue());
+        assertNotNull(instance());
         assertThat(instance(), hasProperty("closed", is(false)));
     }
 
